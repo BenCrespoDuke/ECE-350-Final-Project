@@ -1,0 +1,6 @@
+Decoder32.v
+triState.v
+dffe_ref.v
+register.v
+regfile.v
+regfile_tb.v
