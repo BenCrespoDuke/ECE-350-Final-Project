@@ -6,7 +6,7 @@
 module servo(signal, clk, en, duty);
 
     input [31:0] duty;
-    input clk, en,dirSwich,speedUp,slowDown;
+    input clk, en;
     output reg signal;
   
     //assign duty = 32'd1000000;

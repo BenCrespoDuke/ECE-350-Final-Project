@@ -9,8 +9,8 @@
 ###
 
 
-addi    $r3, $r0, 1
+addi    $r3, $r0, 2000
 sp      $speed, $r3, 100
 mi      $r1, $r3, 4
 sp      $speed, $r3, 900
-mi      $r1, $r0, 2
+mi      $r1, $r3, 2
