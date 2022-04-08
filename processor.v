@@ -39,7 +39,9 @@ module processor(
     ctrl_readRegB,                  // O: Register to read from port B of RegFile
     data_writeReg,                  // O: Data to write to for RegFile
     data_readRegA,                  // I: Data from port A of RegFile
-    data_readRegB                   // I: Data from port B of RegFile
+    data_readRegB,
+    directions,
+    PMWOut                  // I: Data from port B of RegFile
 	 
 	);
 
@@ -60,7 +62,8 @@ module processor(
 	output [4:0] ctrl_writeReg, ctrl_readRegA, ctrl_readRegB;
 	output [31:0] data_writeReg;
 	input [31:0] data_readRegA, data_readRegB;
-
+    output [7:0] directions;
+    output [3:0] PMWOut;
 	/* YOUR CODE STARTS HERE */
     wire invertClock,nop,ctrl_MULT,ctrl_DIV,MultDivExE, IsMDOut, isMDIN,MultDivFin,stage3Over,jmp,jal,jr,shldBrnch,branchIsn,doBex;
     not inClock(invertClock,clock);
@@ -115,13 +118,14 @@ module processor(
         assign AIntern2 = BypassA1 ? dataMemA : AIntern1;
         assign AIntern3 =  TakeOvf5A ? OvfNumbStage5 : AIntern2;
         assign datAAluIn = TakeOvf4A ? OvfNumbStage4 : AIntern3;
-
+        //All bypassing control done for stage 3
         Stage3Ctrl ThirdCtrl(.CurrentIR(IR_Stage3),.IRStage4(IR_Stage4),.IRStage5(IR_Stage5),.byPassB1(BypassB1),.byPassA1(BypassA1),.byPassB2(BypassB2),.byPassA2(BypassA2),.OvfIn(stage3Over),.OvfFlag(OvfFlag),.OvfOut(OvfValue),.TakeOvf4A(TakeOvf4A),.TakeOvf5A(TakeOvf5A),.TakeOvf4B(TakeOvf4B), .TakeOvf5B(TakeOvf5B), .OvfStage4(ovfStage4),  .OvfStage5(ovfStage5) );
    
         assign BIntern1 = BypassB2 ? dataToReg : dataB ;
         assign BIntern3 = BypassB1 ? dataMemA : BIntern1;
         assign BIntern4 = TakeOvf5B ? OvfNumbStage5 : BIntern3;
         assign BIntern2 = TakeOvf4B ? OvfNumbStage4 : BIntern4;
+        //Decides whether it is an immident instruction
         SignExtend Extendor(.opCode(IR_Stage3[31:27]),.dataIn(IR_Stage3[16:0]),.dataOut(extended),.shouldExtend(immFlag));
         
         mux_2 willExtend(.out(AluInB), .select(immFlag && !branchIsn), .in0(BIntern2), .in1(extended));
@@ -143,6 +147,8 @@ module processor(
 
         branchCtrl brnchctrl(.IR_Stage3(IR_Stage3), .nEQ(nEQ), .LT(LT), .shouldBranch(shldBrnch), .newPC(branchPC), .branchIsn(branchIsn), .Stage3PC(PC_Stage3), .signExtended(extended));
 
+
+        servoController servos(.clck(clock),.IR(IR_Stage3),.DataA(datAAluIn),.DataB(AluInB),.Direction1(directions[1:0]),.Direction2(directions[3:2]),.Direction3(directions[5:4]),.Direction4(directions[7:6]),.Signals(PMWOut),.reset(reset));
 
     wire flsh3;
     wire [31:0] stage3Out,Stage3Isn;

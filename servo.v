@@ -3,12 +3,11 @@
     Output a single pwm signal with period of ~20ms
     Pulse width = 1ms -> 2ms full scale. 1.5ms is center position
 */
-module servo(signal, clk, en, direction1, direction2,dirSwich,speedUp,slowDown);
+module servo(signal, clk, en, duty);
 
-    reg [31:0] duty = 32'd1000000;
+    input [31:0] duty;
     input clk, en,dirSwich,speedUp,slowDown;
     output reg signal;
-    output reg direction1 = 1'b0, direction2 = 1'b1;
   
     //assign duty = 32'd1000000;
     // position is 100k-200k (1ms-2ms @ 100MHz)
@@ -33,16 +32,6 @@ module servo(signal, clk, en, direction1, direction2,dirSwich,speedUp,slowDown);
         end
         
         
-     always @ (posedge dirSwich ) begin
-        direction1 = ~direction1;
-        direction2 = ~direction2;
-     
-     end
-     always @ (posedge (speedUp || slowDown)) begin
-        if(duty<1800000) begin
-        duty = duty+200000*speedUp-200000*slowDown;
-        end
-        end
      
        
    

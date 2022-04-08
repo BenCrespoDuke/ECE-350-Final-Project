@@ -21,13 +21,10 @@ toggleReg.v
 FourBitCounter.v
 multCtrl.v
 FiveBitCounter.v
-multiplier.v
-divider.v
 mux_2bit.v
 PipelineStage.v
 PipeLineFirstStage.v
 WriteEn.v
-PipelineStage2.v
 Stage4Control.v
 multdiv.v
 signExtend.v
@@ -39,5 +36,7 @@ branchCtrl.v
 mux_2_5Bit.v
 Stage3Ctrl.v
 processor.v
+servo.v
+servoController.v
 Wrapper_tb.v
 Wrapper.v

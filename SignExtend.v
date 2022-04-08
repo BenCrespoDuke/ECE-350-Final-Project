@@ -3,6 +3,7 @@ module SignExtend(opCode,dataIn,dataOut,shouldExtend);
 input[16:0] dataIn;
 input[4:0] opCode;
 output shouldExtend;
+wire shouldExtend1;
 output[31:0] dataOut;
 
 assign dataOut[31] = dataIn[16];
@@ -33,7 +34,9 @@ and and2(w2,An,Bn,opCode[2],opCode[1]);
 and and3(w3,An,Bn,opCode[1],En);
 and and4(w4,An,opCode[3],Cn,Dn,En);
 
-or or1(shouldExtend,w1,w2,w3,w4);
+or or1(shouldExtend1,w1,w2,w3,w4);
+
+assign shouldExtend = shouldExtend1 || (opCode == 5'b01001 ) || (opCode == 5'b01010 ) || (opCode == 5'b01011 ) || (opCode == 5'b01100 );
 
 
 endmodule

@@ -24,9 +24,10 @@
  *
  **/
 
-module Wrapper (clock, reset);
+module Wrapper (clock, reset,PWMSignals,Directions);
 	input clock, reset;
-
+	output [7:0] Directions;
+	output [3:0] PWMSignals;
 	wire rwe, mwe;
 	wire[4:0] rd, rs1, rs2;
 	wire[31:0] instAddr, instData, 
@@ -50,7 +51,8 @@ module Wrapper (clock, reset);
 									
 		// RAM
 		.wren(mwe), .address_dmem(memAddr), 
-		.data(memDataIn), .q_dmem(memDataOut)); 
+		.data(memDataIn), .q_dmem(memDataOut),
+		.directions(Directions), .PMWOut(PWMSignals) ); 
 	
 	// Instruction Memory (ROM)
 	ROM #(.MEMFILE({INSTR_FILE, ".mem"}))
