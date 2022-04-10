@@ -16,7 +16,7 @@ assign speedIn = 1900*DataB;
 assign TimeAjust = DataA*5;
 register speedReg(.data_In(speedIn), .data_Out(DutyCycle), .clk(clck),.en(isSpIsn),.clr(reset));
 
-assign shouldChangeDir = (IR[31:27] == 5'b01010 || IR[31:27] == 5'b01100) || finishMove;
+assign shouldChangeDir = (IR[31:27] == 5'b01010 || IR[31:27] == 5'b01100) || (helper && timeLim != 0);
 assign TimeIn = (IR[31:27] == 5'b01010 || IR[31:27] == 5'b01100)? TimeAjust: MemTime;
 assign directionIn =  (IR[31:27] == 5'b01010 || IR[31:27] == 5'b01100)? DataB: MemDir;
 register directionReg(.data_In(directionIn), .data_Out(directionNumb), .clk(clck),.en(shouldChangeDir),.clr(reset));
@@ -24,10 +24,13 @@ register timingReg(.data_In(TimeIn), .data_Out(timeLim), .clk(clck),.en(shouldCh
 
 
 wire [31:0] countIn,currentCount;
-dffe_ref dflip(.q(finishMove),.d(currentCount>timeLim && timeLim!=0),.clk(!clck), .en(1'b1),.clr(reset));
-register counting(.data_In(countIn), .data_Out(currentCount), .clk(clck),.en(1'b1),.clr(reset));
-assign countIn = (shouldChangeDir)? 32'd0 : currentCount + 32'd1;
+wire helper;
+//dffe_ref dflip(.q(finishMove),.d(currentCount>timeLim && timeLim!=0),.clk(!clck), .en(1'b1),.clr(reset));
+//dffe_ref help(.q(helper),.d(shouldChangeDir),.clk(!clck), .en(1'b1),.clr(reset));
+//register counting(.data_In(countIn), .data_Out(currentCount), .clk(clck),.en(1'b1),.clr(reset));
+//assign countIn = (helper)? 32'd0 : currentCount + 32'd1;
 //assign finishMove = currentCount > timeLim ;
+clk_divider help(.freq(timeLim), .clk(clck), .new_clk(helper),.change(shouldChangeDir));
 
 assign Direction1 = (directionNumb == 2 || directionNumb == 3)? 2'b01 : ( (directionNumb == 1 || directionNumb == 4)? 2'b10 : 2'b00 );
 assign Direction2 = (directionNumb == 2 || directionNumb == 3)? 2'b01 : ( (directionNumb == 1 || directionNumb == 4)? 2'b10 : 2'b00 );

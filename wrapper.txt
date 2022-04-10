@@ -38,6 +38,7 @@ Stage3Ctrl.v
 MoveMem.v
 processor.v
 servo.v
+clk_divider.v
 servoController.v
 Wrapper_tb.v
 Wrapper.v
