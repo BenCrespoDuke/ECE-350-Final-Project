@@ -38,4 +38,8 @@ nop
 nop
 nop
 mi      $r1, $r3, 2
+nop
+nop
+nop 
+lc      $r1, $r3, 4
   
