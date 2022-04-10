@@ -52,7 +52,7 @@ module Wrapper (clock, reset,PWMSignals,Directions);
 		// RAM
 		.wren(mwe), .address_dmem(memAddr), 
 		.data(memDataIn), .q_dmem(memDataOut),
-	); 
+		.directions(Directions), .PMWOut(PWMSignals) ); 
 	
 	// Instruction Memory (ROM)
 	ROM #(.MEMFILE({INSTR_FILE, ".mem"}))

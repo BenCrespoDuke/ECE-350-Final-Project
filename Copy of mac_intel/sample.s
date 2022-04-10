@@ -9,8 +9,33 @@
 ###
 
 
-addi    $r3, $r0, 2000
-sp      $speed, $r3, 100
-mi      $r1, $r3, 4
+addi    $r3, $r0, 10
+nop
+nop
+nop
 sp      $speed, $r3, 900
+nop
+nop
+nop
+mi      $r1, $r3, 4
+nop
+nop
+nop
+lm      $r1, $r3, 1
+nop
+nop
+nop
+lm      $r1, $r3, 2
+nop
+nop
+nop
+lm      $r1, $r3, 3
+nop
+nop
+nop
+lm      $r1, $r3, 4
+nop
+nop
+nop
 mi      $r1, $r3, 2
+  

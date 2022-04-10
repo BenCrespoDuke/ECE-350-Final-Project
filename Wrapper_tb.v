@@ -175,8 +175,8 @@ module Wrapper_tb #(parameter FILE = "sample");
 		reset = 0;
 
 		// Run for the number of cycles specified 
-		for (cycles = 0; cycles < num_cycles; cycles = cycles + 1) begin
-			
+		for (cycles = 0; cycles < 510; cycles = cycles + 1) begin
+			//$display("%d",cycles);
 			// Every rising edge, write to the actual file
 			@(posedge clock);
 			if (rwe && rd != 0) begin

@@ -35,6 +35,7 @@ Stage2Ctrl.v
 branchCtrl.v
 mux_2_5Bit.v
 Stage3Ctrl.v
+MoveMem.v
 processor.v
 servo.v
 servoController.v

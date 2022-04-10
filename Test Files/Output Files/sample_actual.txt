@@ -1,9 +1,9 @@
-Cycle   4: Wrote 2000 into register 3
+Cycle   4: Wrote 10 into register 3
 ============== Testing Mode ==============
 Reg  0:           0
 Reg  1:           0
 Reg  2:           0
-Reg  3:        2000
+Reg  3:          10
 Reg  4:           0
 Reg  5:           0
 Reg  6:           0
