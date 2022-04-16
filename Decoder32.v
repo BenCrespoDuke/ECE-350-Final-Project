@@ -47,3 +47,38 @@ and(out[31],select[0],select[1],select[2],select[3],select[4]);
 
 
 endmodule
+
+module decoder_3to8(decode_value, input_value, ctrl_enable);
+    input [2:0] input_value;
+    input ctrl_enable;
+    reg [7:0] decode_values;
+    output [7:0] decode_value;
+
+    always @(posedge ctrl_enable) begin
+        decode_values <= 8'b0;
+        if(input_value == 0) begin
+            decode_values[0] <= 1'b1;
+        end
+        else if(input_value == 1) begin
+            decode_values[1] <= 1'b1;
+        end
+        else if(input_value == 2) begin
+            decode_values[2] <= 1'b1;
+        end
+        else if(input_value == 3) begin
+            decode_values[3] <= 1'b1;
+        end
+        else if(input_value == 4) begin
+            decode_values[4] <= 1'b1;
+        end
+        else if(input_value == 5) begin
+            decode_values[5] <= 1'b1;
+        end
+        else if(input_value == 6) begin
+            decode_values[6] <= 1'b1;
+        end
+        else if(input_value == 7) begin
+            decode_values[7] <= 1'b1;
+        end
+    end
+endmodule
