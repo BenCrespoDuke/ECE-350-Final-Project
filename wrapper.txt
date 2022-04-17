@@ -1,9 +1,11 @@
 LeftShifter.v
 RightShifter.v
 alu.v
+adc.v
 bitwise_And.v
 bitwise_Not.v
 bitwise_Or.v
+clk_divider_adc.v
 equalsZero.v
 adder_Block.v
 fullAdder.v
