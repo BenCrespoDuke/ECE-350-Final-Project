@@ -142,9 +142,9 @@ module multdiv(data_operandA, data_operandB, ctrl_MULT, ctrl_DIV, clock, data_re
    // triState takeRes(RegOutOnReset,needToRes,DivregOut);
     mux64  chooseDataOutOfReggie(.out(DivregOut), .select(needToRes), .in0(DivPreOut), .in1(RegOutOnReset));
     nor notZero1(Zero1,data_operandB[0],data_operandB[1],data_operandB[2],data_operandB[3],data_operandB[4],data_operandB[5],data_operandB[6],data_operandB[7]);
-    nor notZero1(Zero2,data_operandB[8],data_operandB[9],data_operandB[10],data_operandB[11],data_operandB[12],data_operandB[13],data_operandB[14],data_operandB[15]);
-    nor notZero1(Zero3,data_operandB[16],data_operandB[17],data_operandB[18],data_operandB[19],data_operandB[20],data_operandB[21],data_operandB[22],data_operandB[23]);
-    nor notZero1(Zero4,data_operandB[24],data_operandB[25],data_operandB[26],data_operandB[27],data_operandB[28],data_operandB[29],data_operandB[30],data_operandB[31]);
+    nor notZero2(Zero2,data_operandB[8],data_operandB[9],data_operandB[10],data_operandB[11],data_operandB[12],data_operandB[13],data_operandB[14],data_operandB[15]);
+    nor notZero3(Zero3,data_operandB[16],data_operandB[17],data_operandB[18],data_operandB[19],data_operandB[20],data_operandB[21],data_operandB[22],data_operandB[23]);
+    nor notZero4(Zero4,data_operandB[24],data_operandB[25],data_operandB[26],data_operandB[27],data_operandB[28],data_operandB[29],data_operandB[30],data_operandB[31]);
     and isZeroGate(isZero,Zero1,Zero2,Zero3,Zero4);
 
     //negate output and choose between negative and posive

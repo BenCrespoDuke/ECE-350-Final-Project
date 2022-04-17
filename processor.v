@@ -41,8 +41,15 @@ module processor(
     data_readRegA,                  // I: Data from port A of RegFile
     data_readRegB,
     directions,
-    PMWOut                  // I: Data from port B of RegFile
-	 
+    PMWOut,                  // I: Data from port B of RegFile
+	transistors,
+    resistors,
+    regTrigger,
+    regTrigger_two,
+    address_transistors,
+    address_resistors,
+    clk_adc
+
 	);
 
 	// Control signals
@@ -62,8 +69,17 @@ module processor(
 	output [4:0] ctrl_writeReg, ctrl_readRegA, ctrl_readRegB;
 	output [31:0] data_writeReg;
 	input [31:0] data_readRegA, data_readRegB;
+
+    //motors
     output [7:0] directions;
     output [3:0] PMWOut;
+    
+    //photoresistors and phototransistors
+    input [7:0] transistors, resistors;
+    input regTrigger, regTrigger_two;
+    output [2:0] address_transistors, address_resistors;
+	output clk_adc;
+
 	/* YOUR CODE STARTS HERE */
     wire invertClock,nop,ctrl_MULT,ctrl_DIV,MultDivExE, IsMDOut, isMDIN,MultDivFin,stage3Over,jmp,jal,jr,shldBrnch,branchIsn,doBex;
     not inClock(invertClock,clock);
@@ -110,7 +126,7 @@ module processor(
         
     PipelineStage stage2(.DataIn_A(data_readRegA), .DataIn_B(data_readRegB),.PC_In(PC_Stage2),.IR_In(IRInStage2),.DataOut_A(dataA),.DataOut_B(dataB),.PC_Out(PC_Stage3),
     .IR_Out(IR_Stage3),.clk(invertClock),.flush(stage2Res), .ovf_In(1'b0), .ovf_Out(junk), .ovf_numIn(0), .ovf_numOut(junk32));
-        wire [31:0] extended, AluInB,AIntern1,datAAluIn, BIntern1, BIntern2,OvfValue, OvfNumbStage5, OvfNumbStage4,AIntern2,AIntern3,BIntern3,BIntern4;
+        wire [31:0] extended, AluInB,AIntern1,datAAluIn, BIntern1, BIntern2,OvfValue, OvfNumbStage5, OvfNumbStage4,AIntern2,AIntern3,BIntern3,BIntern4, output_transistors, output_resistors;
         wire immFlag, BypassA1,BypassA2,BypassB1,BypassB2,OvfFlag,TakeOvf4A,TakeOvf5A,TakeOvf4B, TakeOvf5B;
         wire [4:0] ALUOpIn1,ALUOpIn;
 
@@ -147,13 +163,13 @@ module processor(
 
         branchCtrl brnchctrl(.IR_Stage3(IR_Stage3), .nEQ(nEQ), .LT(LT), .shouldBranch(shldBrnch), .newPC(branchPC), .branchIsn(branchIsn), .Stage3PC(PC_Stage3), .signExtended(extended));
 
-
+        adc_test ADC(.determine_transistor(extended[2:0]), .determine_resistor(extended[1:0]), .dc_input_one(transistors), .dc_input_two(resistors), .clk(clock), .regTrigger(regTrigger), .regTrigger_two(regTrigger_two), .clk_out(clk_adc), .address_one(address_transistors), .address_two(address_resistors), .output_transistor(output_transistors), .output_resistor(output_resistors));
         servoController servos(.clck(clock),.IR(IR_Stage3),.DataA(datAAluIn),.DataB(AluInB),.Direction1(directions[1:0]),.Direction2(directions[3:2]),.Direction3(directions[5:4]),.Direction4(directions[7:6]),.Signals(PMWOut),.reset(reset));
 
     wire flsh3;
     wire [31:0] stage3Out,Stage3Isn;
 
-    assign stage3Out =  (MultDivFin && IsMDOut)?  MultDivOut : ALU_Output ;
+    assign stage3Out = (IR_Stage3[31:27] == 5'd13) ? output_resistors : ((IR_Stage3[31:27] == 5'd14) ? output_transistors : ((MultDivFin && IsMDOut)?  MultDivOut : ALU_Output));
     assign stage3Over = IsMDOut ? MultDivExE : AluOver;
     assign flsh3 = reset;
     assign Stage3Isn = isMDIN? 0 : (MultDivFin && IsMDOut) ? storedIsn3 : IR_Stage3;

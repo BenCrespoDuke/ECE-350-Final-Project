@@ -3,12 +3,12 @@ module adc_test(determine_transistor, determine_resistor, dc_input_one, dc_input
     input [2:0] determine_transistor;
     input [1:0] determine_resistor;
     input clk, regTrigger, regTrigger_two;
-    output [7:0] output_transistor, output_resistor;
+    output [31:0] output_transistor, output_resistor;
     output [2:0] address_one, address_two;
     output clk_out;
+    wire [31:0] transistor_extend, resistor_extend, resistor_out, transistor_out, register_transistor[7:0], register_resistor[3:0];
     wire [16:0] freq = 21'd80000;
-    wire [11:0] regEnable;
-    wire [7:0] register_values[11:0];
+    wire [7:0] regEnable_transistor, regEnable_resistor;
     reg [2:0] transistor_count, resistor_count;
    
     always @(posedge regTrigger) begin
@@ -29,22 +29,30 @@ module adc_test(determine_transistor, determine_resistor, dc_input_one, dc_input
         end
     end
     
-    decoder_3to8 decoder_transistors(regEnable[7:0], transistor_count, regTrigger);
-    decoder_3to8 decoder_resistors(regEnable[11:8], resistor_count, regTrigger_two);
+    decoder_3to8 decoder_transistors(regEnable_transistor, transistor_count, regTrigger);
+    decoder_3to8 decoder_resistors(regEnable_resistor, resistor_count, regTrigger_two);
    
     assign address_one = transistor_count;
     assign address_two = resistor_count;
-    assign output_transistor = register_values[determine_transistor];
-    assign output_resistor = register_values[determine_resistor + 8];
+    assign output_transistor[31:8] = 24'd0;
+    assign output_resistor[31:0] = 24'd0;
+    //double check the 2d array implementation
+    assign output_transistor[7:0] = register_transistor[determine_transistor][7:0];
+    assign output_resistor[7:0] = register_resistor[determine_resistor][7:0];
+    //ends here
+    assign transistor_extend[31:8] = 24'd0;
+    assign resistor_extend[31:8] = 24'd0;
+    assign transistor_extend[7:0] = dc_input_one;
+    assign resistor_extend[7:0] = dc_input_two;
    
     genvar i;
     genvar j;
     generate
-        for(i = 1; i < 8; i = i + 1) begin: loop_transistor
-			register transistor_register(dc_input_one, register_values[i], regTrigger, regEnable[i], 1'b0);
+        for(i = 0; i < 8; i = i + 1) begin: loop_transistor
+			register transistor_register(transistor_extend, register_transistor[i], regTrigger, regEnable_transistor[i], 1'b0);
         end
-        for(j = 8; j < 12; j = j + 1) begin: loop_resistor
-			register resistor_register(dc_input_two, register_values[j], regTrigger_two, regEnable[j], 1'b0);
+        for(j = 0; j < 4; j = j + 1) begin: loop_resistor
+			register resistor_register(resistor_extend, register_resistor[j], regTrigger_two, regEnable_resistor[j], 1'b0);
         end
     endgenerate
     
