@@ -24,10 +24,13 @@
  *
  **/
 
-module Wrapper (clock, reset,PWMSignals,Directions);
-	input clock, reset;
+module Wrapper (clock, reset,PWMSignals,Directions,transistors,resistors,regTrigger,regTrigger_two,address_transistors,address_resistors,clk_adc);
+	input [7:0] transistors, resistors;
+	input clock, reset, regTrigger, regTrigger_two;
 	output [7:0] Directions;
 	output [3:0] PWMSignals;
+	output [2:0] address_transistors, address_resistors;
+	output clk_adc;
 	wire rwe, mwe;
 	wire[4:0] rd, rs1, rs2;
 	wire[31:0] instAddr, instData, 
