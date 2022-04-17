@@ -13,16 +13,16 @@ reg [31:0] counter = 32'b1;
 reg finishMove = 1'b0;
 assign isSpIsn = (IR[31:27] == 5'b01001);
 assign speedIn = 1900*DataB;
-assign TimeAjust = DataA*50000 ;
+//assign TimeAjust = DataA*50000 ;
 register speedReg(.data_In(speedIn), .data_Out(DutyCycle), .clk(clck),.en(isSpIsn),.clr(reset));
 
 assign shouldChangeDir = (IR[31:27] == 5'b01010);
-assign TimeIn = shouldChangeDir? TimeAjust: 32'b0;
+//assign TimeIn = shouldChangeDir? TimeAjust: 32'b0;
 assign directionIn = shouldChangeDir? DataB: 32'b0;
 register directionReg(.data_In(DataB), .data_Out(directionNumb), .clk(clck),.en(shouldChangeDir || finishMove),.clr(reset));
-register timingReg(.data_In(TimeIn), .data_Out(timeLim), .clk(clck),.en(shouldChangeDir || finishMove),.clr(reset));
+//register timingReg(.data_In(TimeIn), .data_Out(timeLim), .clk(clck),.en(shouldChangeDir || finishMove),.clr(reset));
 
-always @(negedge clck) begin
+/*always @(negedge clck) begin
     
 
 if(directionNumb != 0)begin
@@ -39,7 +39,7 @@ if(directionNumb != 0)begin
 
 end
 
-end
+end*/
 
 assign Direction1 = (directionNumb == 2 || directionNumb == 3)? 2'b01 : ( (directionNumb == 1 || directionNumb == 4)? 2'b10 : 2'b00 );
 assign Direction2 = (directionNumb == 2 || directionNumb == 3)? 2'b01 : ( (directionNumb == 1 || directionNumb == 4)? 2'b10 : 2'b00 );
